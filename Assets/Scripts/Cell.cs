@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Cell : MonoBehaviour
@@ -19,33 +17,42 @@ public class Cell : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (PlayerPrefs.GetFloat("AI") == 1)
+        {
+            if (status != 0)
+            {
+                gameManger.botCell();
+                onClick();
+            }
+        }
     }
     
     void OnMouseDown()
     {
-        if (cube.activeSelf==true ||  sphere.activeSelf == true)
+        if (PlayerPrefs.GetInt("GameFinish") == 0 && PlayerPrefs.GetInt("AITurn") == 0)
         {
-            //nos vamos si cubo y sphere activos
-            Debug.Log("Eips que la cel·la ja està clicada");
-            return;
+            onClick();
         }
-        
-        if (gameManger.isCubeTurn == true)
+    }
+    public void onClick()
+    {
+        if (!cube.activeSelf && !sphere.activeSelf)
         {
-            status = 2;
-            cube.SetActive(true);
-            sphere.SetActive(false);
-            gameManger.isCubeTurn = false;
+            if (gameManger.isCubeTurn == true)
+            {
+                status = 2;
+                cube.SetActive(true);
+                sphere.SetActive(false);
+                gameManger.isCubeTurn = false;
+            }
+            else
+            {
+                status = 1;
+                sphere.SetActive(true);
+                cube.SetActive(false);
+                gameManger.isCubeTurn = true;
+            }
         }
-        else
-        {
-            status = 1;
-            sphere.SetActive(true);    
-            cube.SetActive(false);
-            gameManger.isCubeTurn = true;
-        }
-        
         gameManger.CheckWinner();
     }
 }
